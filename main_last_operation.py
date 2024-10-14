@@ -1,5 +1,4 @@
 import json
-import re
 
 
 def load_operations(filename):  # Извлекаем данные из файла
@@ -14,7 +13,7 @@ def load_operations(filename):  # Извлекаем данные из файл�
         return []
 
 
-def mask_requisites(requisites:str):
+def mask_requisites(requisites:str): # Преобразую данные по счетам с маркировкой
     parts = requisites.split()
     number = parts[-1]
     if requisites.lower().startswith('счет'):
@@ -26,7 +25,7 @@ def mask_requisites(requisites:str):
     return result
 
 
-def reformate_date(date: str):
+def reformated_date(date: str): # Преобразую данные даты
     parts_date = date.split('-')
     reversed_date = parts_date[::-1]
     result_date = '.'.join(reversed_date)
@@ -40,7 +39,7 @@ def display_last_operations(operations):
 
     for op in last_operations:  # Выводим информацию о каждой операции
         date = op.get('date', 'Не указана')[:10]
-        result_date = reformate_date(date)
+        result_date = reformated_date(date)
         description = op.get('description', 'Не указано')
         print(f"{result_date} {description}")
 
@@ -48,13 +47,13 @@ def display_last_operations(operations):
         currency = op.get('operationAmount').get('currency').get('name')
         print(f"{amount} {currency}")
 
-        requisites_from = op.get('from', '')  # Маскируем данные карты
+        requisites_from = op.get('from', '')  # Получаем данные откуда
         if requisites_from:
             hidden_from = mask_requisites(requisites_from)
         else:
             hidden_from = ''
 
-        requisites_to = op.get('to', '')  # Маскируем данные карты
+        requisites_to = op.get('to', '')  # Получаем данные откуда
         hidden_to = mask_requisites(requisites_to)
 
         print(f"{hidden_from} -> {hidden_to}")
