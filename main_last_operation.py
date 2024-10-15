@@ -1,5 +1,4 @@
 import json
-import re
 
 
 def load_operations(filename):  # Извлекаем данные из файла
@@ -14,35 +13,51 @@ def load_operations(filename):  # Извлекаем данные из файл�
         return []
 
 
+def mask_requisites(requisites:str): # Преобразую данные по счетам с маркировкой
+    parts = requisites.split()
+    number = parts[-1]
+    if requisites.lower().startswith('счет'):
+        hidden_number = f"**{number[-4:]}"
+    else:
+        hidden_number = f"{number[:4]} {number[4:6]}** **** {number[-4:]}"
+    parts[-1] = hidden_number
+    result = ' '.join(parts)
+    return result
+
+
+def reformated_date(date: str): # Преобразую данные даты
+    parts_date = date.split('-')
+    reversed_date = parts_date[::-1]
+    result_date = '.'.join(reversed_date)
+    return result_date
+
+
 def display_last_operations(operations):
     executed_operations = [op for op in operations if op.get('state') == 'EXECUTED']  # Фильтруем выполненные операции
     executed_operations.sort(key=lambda x: x.get('date', ''), reverse=True)  # Сортируем операции по дате
     last_operations = executed_operations[:5]  # Берем последние 5 операций
 
-    for op in last_operations: # Выводим информацию о каждой операции
-        print(f"{op.get('date', 'Не указана')[:10]} Описание: {op.get('description', 'Не указано')}")
-        amount = op.get('operationAmount', {})
-        currency = amount.get('currency', {})
-        card_number = op.get('from', '')  # Маскируем данные карты
-        match = re.search(r'\d{16}', card_number)  # Ищем 16-значный номер карты
+    for op in last_operations:  # Выводим информацию о каждой операции
+        date = op.get('date', 'Не указана')[:10]
+        result_date = reformated_date(date)
+        description = op.get('description', 'Не указано')
+        print(f"{result_date} {description}")
 
-        if match:
-            card_number = match.group(0)  # Извлекаем номер карты
-            card_number = ' '.join([card_number[i:i + 4] for i in range(0, len(card_number), 4)])  # Форматируем номер
-            masked_card_number = f"{card_number[:7]}** **** {card_number[-4:]}"  # Маскируем данные карты
+        amount = op.get('operationAmount').get('amount')
+        currency = op.get('operationAmount').get('currency').get('name')
+        print(f"{amount} {currency}")
 
+        requisites_from = op.get('from', '')  # Получаем данные откуда
+        if requisites_from:
+            hidden_from = mask_requisites(requisites_from)
         else:
-            masked_card_number = "Не указано"
+            hidden_from = ''
 
-        account_number = op.get('to', '')
-        if isinstance(account_number, str) and len(account_number) >= 6:
-            masked_account_number = f"Счет **{account_number[-4:]}"  # Маскируем данные счета
-        else:
-            masked_account_number = "Не указано"
+        requisites_to = op.get('to', '')  # Получаем данные откуда
+        hidden_to = mask_requisites(requisites_to)
 
-        print(f"{masked_card_number} -> {masked_account_number}")
-        print(f"Сумма: {amount.get('amount', 'Не указана')} {currency.get('name', 'Не указана')}")
-        print(' ' * 50)
+        print(f"{hidden_from} -> {hidden_to}")
+        print()
 
 
 def main():
