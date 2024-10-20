@@ -1,7 +1,7 @@
 import pytest
 import json
 from unittest.mock import patch, mock_open
-from main_last_operation import load_operations, display_last_operations
+from main import load_operations, display_last_operations
 
 
 # Тесты для функции load_operations

@@ -58,12 +58,3 @@ def display_last_operations(operations):
 
         print(f"{hidden_from} -> {hidden_to}")
         print()
-
-
-def main():
-    operations = load_operations('operations.json')
-    display_last_operations(operations)
-
-
-if __name__ == "__main__":
-    main()
