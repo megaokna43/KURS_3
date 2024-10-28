@@ -31,11 +31,14 @@ def reformated_date(date: str): # Преобразую данные даты
     result_date = '.'.join(reversed_date)
     return result_date
 
-
-def display_last_operations(operations):
+def get_last_5_operations(operations):
     executed_operations = [op for op in operations if op.get('state') == 'EXECUTED']  # Фильтруем выполненные операции
     executed_operations.sort(key=lambda x: x.get('date', ''), reverse=True)  # Сортируем операции по дате
     last_operations = executed_operations[:5]  # Берем последние 5 операций
+
+    return last_operations
+def display_last_operations(operations):
+    last_operations = get_last_5_operations(operations)
 
     for op in last_operations:  # Выводим информацию о каждой операции
         date = op.get('date', 'Не указана')[:10]
