@@ -1,4 +1,3 @@
-
 import pytest
 from src.utils import reformated_date, mask_requisites, load_operations, get_last_5_operations
 
@@ -44,4 +43,5 @@ def test_TypeError_get_last_5_operations():
 
 def test_AttributeError_get_last_5_operations():
     with pytest.raises(AttributeError):
-       get_last_5_operations("    ").non_existent_attribute
+        result = get_last_5_operations(" ")
+        result.non_existent_attribute
