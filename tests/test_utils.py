@@ -44,4 +44,4 @@ def test_TypeError_get_last_5_operations():
 def test_AttributeError_get_last_5_operations():
     with pytest.raises(AttributeError):
         result = get_last_5_operations(" ")
-        result.non_existent_attribute
+        assert isinstance(result.non_existent_attribute, object)
