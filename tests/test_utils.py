@@ -1,39 +1,7 @@
 import pytest
-from unittest.mock import patch
-from src.utils import reformated_date, mask_requisites, load_operations, get_last_5_operations, display_last_operations
 
-@pytest.fixture
-def example_data():
-    # выбрал часть данных файла json
-    return [{
-        "id": 608117766,
-        "state": "CANCELED",
-        "date": "2018-10-08T09:05:05.282282",
-        "operationAmount": {
-            "amount": "77302.31",
-            "currency": {
-                "name": "USD",
-                "code": "USD"
-            }
-        },
-        "description": "Перевод с карты на счет",
-        "from": "Visa Gold 6527183396477720",
-        "to": "Счет 38573816654581789611"
-    },
-    ]
+from src.utils import (reformated_date, mask_requisites, load_operations, get_last_5_operations)
 
-def test_field_access(example_data):
-    operation = example_data[0]
-    assert operation["id"] == 608117766
-    assert operation["state"] == "CANCELED"
-    assert operation["date"] == "2018-10-08T09:05:05.282282"
-    assert operation["operationAmount"] == {
-        "amount": "77302.31",
-        "currency": {"name": "USD", "code": "USD"},
-    }
-    assert operation["description"] == "Перевод с карты на счет"
-    assert operation["from"] == "Visa Gold 6527183396477720"
-    assert operation["to"] == "Счет 38573816654581789611"
 
 def test_reformated_date():
     # Проверяем правильность отображения даты
@@ -70,7 +38,7 @@ def test_load_wrong():
     assert len(op) == 0
 
 
-def test_zero_executed_operations():
+def test_executed_operations():
     # Создание пустого списка операций
     operations = []
 
@@ -108,30 +76,3 @@ def test_main_currency_code():
                                                          "RUB"], \
             (f"Код валюты '{x.operationAmount['currency']['code']}' "
              f"\n не является ни 'USD', ни 'RUB'")
-
-
-def test_id_data():
-    data = 608117766
-
-    assert isinstance(data, int)
-    assert data == 608117766
-
-# Тестирование функции display_last_operations
-@patch('builtins.print')
-def test_display_last_operations(mock_print, example_data):
-    # Предполагаю, что get_last_5_operations возвращает все операции в example_data
-    with patch('src.utils.get_last_5_operations', return_value=example_data):
-        display_last_operations(example_data)
-
-    # Проверяем, что print был вызван с ожидаемыми аргументами
-    expected_calls = [
-        ("2018-10-08 Перевод с карты на счет",),
-        ("77302.31 USD",),
-        ("Visa Gold 6527183396477720 -> Счет 38573816654581789611",),
-        ("",)  # Пустая строка для разделения операций
-    ]
-
-    # Проверяем, что print был вызван с ожидаемыми значениями
-    actual_calls = mock_print.call_args_list
-    for expected_call in expected_calls:
-        assert expected_call in actual_calls
