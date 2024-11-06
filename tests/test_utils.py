@@ -1,5 +1,6 @@
 import pytest
-from src.utils import reformated_date, mask_requisites, load_operations, get_last_5_operations
+
+from src.utils import (reformated_date, mask_requisites, load_operations, get_last_5_operations)
 
 
 def test_reformated_date():
@@ -57,3 +58,21 @@ def test_attribute_error_get_last_5_operations():
     with pytest.raises(AttributeError):
         result = get_last_5_operations(" ")  # Вызов функции с пустой строкой
         assert isinstance(result.non_existent_attribute, object)  # Проверка наличия несуществующего атрибута
+
+
+def test_main_amount_format():
+    operations = []
+    for x in operations:
+        try:
+            float(x.operationAmount["amount"])
+        except ValueError:
+            assert False, f"Сумма '{x.operationAmount['amount']}' не является числом"
+
+
+def test_main_currency_code():
+    operations = []
+    for x in operations:
+        assert x.operationAmount["currency"]["code"] in ["USD",
+                                                         "RUB"], \
+            (f"Код валюты '{x.operationAmount['currency']['code']}' "
+             f"\n не является ни 'USD', ни 'RUB'")
