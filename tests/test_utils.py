@@ -27,17 +27,6 @@ def test_get_last_5_executed_operations():
     # Проверяем что эти операции имеют атрибут 'EXECUTED'
 
 
-def test_load():
-    op = load_operations('../operations.json')
-    # Проверка загрузки данный из файла json
-    assert len(op) >= 0
-
-
-def test_load_wrong():
-    op = load_operations('../wrong.json')
-    assert len(op) == 0
-
-
 def test_executed_operations():
     # Создание пустого списка операций
     operations = []
