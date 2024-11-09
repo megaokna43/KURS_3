@@ -2,6 +2,7 @@ import json
 
 
 def load_operations(filename):  # Извлекаем данные из файла
+
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             return json.load(file)
@@ -35,8 +36,8 @@ def get_last_5_operations(operations):
     executed_operations = [op for op in operations if op.get('state') == 'EXECUTED']  # Фильтруем выполненные операции
     executed_operations.sort(key=lambda x: x.get('date', ''), reverse=True)  # Сортируем операции по дате
     last_operations = executed_operations[:5]  # Берем последние 5 операций
-
     return last_operations
+
 def display_last_operations(operations):
     last_operations = get_last_5_operations(operations)
 
